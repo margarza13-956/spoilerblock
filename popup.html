@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpoilerBlock</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 380px;
+      min-height: 420px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f14;
+      color: #e4e4e7;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .header-icon { font-size: 20px; }
+
+    .pause-toggle {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .pause-toggle:hover { background: rgba(255,255,255,0.3); }
+    .pause-toggle.paused { background: rgba(239,68,68,0.8); }
+
+    .stats-bar {
+      display: flex;
+      gap: 0;
+      padding: 12px 20px;
+      background: #18181b;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .stat {
+      flex: 1;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #818cf8;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #71717a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    .section {
+      padding: 16px 20px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #71717a;
+      margin-bottom: 10px;
+    }
+
+    .add-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .add-form input,
+    .add-form select {
+      padding: 8px 12px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      color: #e4e4e7;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .add-form input:focus,
+    .add-form select:focus {
+      border-color: #6366f1;
+    }
+
+    .add-form input::placeholder { color: #52525b; }
+
+    .keyword-input-wrap {
+      position: relative;
+    }
+
+    .keyword-hint {
+      font-size: 11px;
+      color: #52525b;
+      margin-top: -2px;
+      margin-bottom: 2px;
+    }
+
+    .btn-add {
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      padding: 9px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover { background: #5558e9; }
+    .btn-add:disabled { background: #3f3f46; cursor: not-allowed; }
+
+    .watchlist {
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .watchlist-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .watchlist-item-info {
+      flex: 1;
+    }
+
+    .watchlist-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e4e4e7;
+    }
+
+    .watchlist-item-meta {
+      font-size: 12px;
+      color: #71717a;
+      margin-top: 2px;
+    }
+
+    .watchlist-item-keywords {
+      font-size: 11px;
+      color: #818cf8;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .watchlist-item-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: 1px solid #27272a;
+      color: #a1a1aa;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover { border-color: #6366f1; color: #818cf8; }
+    .btn-icon.danger:hover { border-color: #ef4444; color: #ef4444; }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      color: #52525b;
+      font-size: 14px;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .settings-row:last-child { border-bottom: none; }
+
+    .settings-label { font-size: 13px; color: #a1a1aa; }
+
+    .settings-row select {
+      padding: 4px 8px;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      color: #e4e4e7;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .footer {
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 11px;
+      color: #3f3f46;
+      border-top: 1px solid #27272a;
+    }
+
+    .scroll-thin::-webkit-scrollbar { width: 4px; }
+    .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+    .scroll-thin::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="header-icon">🚫</span>
+      <h1>SpoilerBlock</h1>
+    </div>
+    <button class="pause-toggle" id="pauseBtn">Pause</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value" id="statBlocked">0</div>
+      <div class="stat-label">Blocked</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="statRevealed">0</div>
+      <div class="stat-label">Revealed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="statFP">0</div>
+      <div class="stat-label">False Positives</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Add to Watchlist</div>
+    <div class="add-form">
+      <input type="text" id="titleInput" placeholder="Title (e.g. Severance S2)" />
+      <select id="typeSelect">
+        <option value="tv">TV Show</option>
+        <option value="movie">Movie</option>
+        <option value="book">Book</option>
+        <option value="game">Game</option>
+      </select>
+      <div class="keyword-hint">Spoiler keywords (comma-separated, e.g. character names, plot points)</div>
+      <input type="text" id="keywordInput" placeholder="e.g. Mark, Helly, Cold Harbor" />
+      <button class="btn-add" id="addBtn">Add Title</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">My Watchlist (<span id="watchlistCount">0</span>)</div>
+    <div class="watchlist scroll-thin" id="watchlistContainer"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Settings</div>
+    <div class="settings-row">
+      <span class="settings-label">Match Mode</span>
+      <select id="matchModeSelect">
+        <option value="whole_word">Whole Word</option>
+        <option value="partial">Partial Match</option>
+        <option value="fuzzy">Fuzzy Match</option>
+      </select>
+    </div>
+    <div class="settings-row">
+      <span class="settings-label">Blur Level</span>
+      <select id="blurLevelSelect">
+        <option value="heavy">Heavy (12px)</option>
+        <option value="light">Light (4px)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="footer">
+    SpoilerBlock v1.0.0 — Local matching only, no data sent to any server.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

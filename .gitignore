@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build artifacts
+*.zip
+*.crx
+*.pem
+
+# Generated icons (keep PNGs, exclude generator script if desired)
+# icons/gen_icons.py

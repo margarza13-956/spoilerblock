@@ -1,0 +1,110 @@
+/* SpoilerBlock — Styles injected into social media pages */
+
+.spoilerblock-blurred {
+  filter: blur(12px);
+  transition: filter 0.3s ease;
+}
+
+.spoilerblock-overlay {
+  position: relative;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(168, 85, 247, 0.06));
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 12px;
+  min-height: 80px;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.spoilerblock-overlay-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.spoilerblock-overlay-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.spoilerblock-overlay-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: inherit;
+}
+
+.spoilerblock-overlay-text strong {
+  font-size: 15px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.spoilerblock-overlay-text span {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.spoilerblock-overlay-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.spoilerblock-btn-reveal,
+.spoilerblock-btn-fp {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.spoilerblock-btn-reveal {
+  background: #6366f1;
+  color: #ffffff;
+  border-color: #6366f1;
+}
+
+.spoilerblock-btn-reveal:hover {
+  background: #5558e9;
+  border-color: #5558e9;
+}
+
+.spoilerblock-btn-fp {
+  background: transparent;
+  color: inherit;
+  border-color: rgba(128, 128, 128, 0.4);
+}
+
+.spoilerblock-btn-fp:hover {
+  background: rgba(128, 128, 128, 0.1);
+  border-color: rgba(128, 128, 128, 0.6);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .spoilerblock-overlay {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.08));
+    border-color: rgba(99, 102, 241, 0.35);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .spoilerblock-blurred,
+  .spoilerblock-btn-reveal,
+  .spoilerblock-btn-fp {
+    transition: none;
+  }
+}
