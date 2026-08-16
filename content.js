@@ -115,7 +115,7 @@
 
   // ── DOM manipulation ──────────────────────────────────────────────
 
-  const processedPosts = new WeakSet();
+  let processedPosts = new WeakSet();
   const BLOCKED_CLASS = 'spoilerblock-blurred';
   const OVERLAY_CLASS = 'spoilerblock-overlay';
 
