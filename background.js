@@ -4,6 +4,7 @@
 const DEFAULT_STATE = {
   watchlist: [],          // [{ id, title, type, keywords: [], finished: false, addedAt }]
   paused: false,
+  revealedPosts: [],       // Post fingerprints the user has revealed
   settings: {
     matchMode: 'whole_word',  // 'whole_word' | 'partial' | 'fuzzy'
     blurLevel: 'heavy',       // 'heavy' | 'light'
@@ -117,6 +118,82 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         state.stats.blockedCount++;
         await chrome.storage.local.set({ spoilerblock: state });
         sendResponse({ success: true });
+        break;
+      }
+
+      case 'REVEAL_POST': {
+        const data = await chrome.storage.local.get('spoilerblock');
+        const state = data.spoilerblock || DEFAULT_STATE;
+
+        if (!Array.isArray(state.revealedPosts)) {
+          state.revealedPosts = [];
+        }
+
+        if (
+          message.postId &&
+          !state.revealedPosts.includes(message.postId)
+        ) {
+          state.revealedPosts.push(message.postId);
+
+          if (state.revealedPosts.length > 500) {
+            state.revealedPosts = state.revealedPosts.slice(-500);
+          }
+
+          state.stats.revealedCount++;
+        }
+
+        await chrome.storage.local.set({ spoilerblock: state });
+        sendResponse({ success: true });
+        break;
+      }
+
+      case 'IS_POST_REVEALED': {
+        const data = await chrome.storage.local.get('spoilerblock');
+        const state = data.spoilerblock || DEFAULT_STATE;
+
+        const revealed =
+          Array.isArray(state.revealedPosts) &&
+          state.revealedPosts.includes(message.postId);
+
+        sendResponse({ revealed });
+        break;
+      }
+
+      case 'REVEAL_POST': {
+        const data = await chrome.storage.local.get('spoilerblock');
+        const state = data.spoilerblock || DEFAULT_STATE;
+
+        if (!Array.isArray(state.revealedPosts)) {
+          state.revealedPosts = [];
+        }
+
+        if (
+          message.postId &&
+          !state.revealedPosts.includes(message.postId)
+        ) {
+          state.revealedPosts.push(message.postId);
+
+          if (state.revealedPosts.length > 500) {
+            state.revealedPosts = state.revealedPosts.slice(-500);
+          }
+
+          state.stats.revealedCount++;
+        }
+
+        await chrome.storage.local.set({ spoilerblock: state });
+        sendResponse({ success: true });
+        break;
+      }
+
+      case 'IS_POST_REVEALED': {
+        const data = await chrome.storage.local.get('spoilerblock');
+        const state = data.spoilerblock || DEFAULT_STATE;
+
+        const revealed =
+          Array.isArray(state.revealedPosts) &&
+          state.revealedPosts.includes(message.postId);
+
+        sendResponse({ revealed });
         break;
       }
 

@@ -168,9 +168,39 @@
     return text.trim();
   }
 
-  function blurPost(post, matchInfo) {
+  // Create a stable local fingerprint for a social-media post.
+  // This avoids depending on platform-specific internal post IDs.
+  function getPostId(post) {
+    const text = getPostText(post)
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+
+    let hash = 2166136261;
+
+    for (let i = 0; i < text.length; i++) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+
+    return `${PLATFORM}:${(hash >>> 0).toString(16)}`;
+  }
+
+  async function blurPost(post, matchInfo) {
     if (processedPosts.has(post)) return;
     processedPosts.add(post);
+
+    const postId = getPostId(post);
+
+    const revealed = await sendMessage({
+      type: 'IS_POST_REVEALED',
+      postId,
+    });
+
+    if (revealed?.revealed) {
+      processedPosts.delete(post);
+      return;
+    }
 
     const blurLevel = cachedState?.settings?.blurLevel || 'heavy';
     const blurValue = blurLevel === 'heavy' ? 'blur(12px)' : 'blur(4px)';
@@ -214,8 +244,13 @@
     post.insertBefore(overlay, post.firstChild);
 
     // Wire up buttons
-    overlay.querySelector('.spoilerblock-btn-reveal').addEventListener('click', (e) => {
+    overlay.querySelector('.spoilerblock-btn-reveal').addEventListener('click', async (e) => {
       e.stopPropagation();
+
+      await sendMessage({
+        type: 'REVEAL_POST',
+        postId,
+      });
       textEls.forEach((el) => { el.style.filter = 'none'; });
       post.querySelectorAll('img, video').forEach((el) => { el.style.filter = 'none'; });
       overlay.remove();
