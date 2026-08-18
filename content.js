@@ -66,31 +66,61 @@
 
   function checkForSpoilers(text) {
     if (!text || !activeKeywords.size) return null;
-    const lowerText = text.toLowerCase();
+
     const matchMode = cachedState?.settings?.matchMode || 'whole_word';
 
     for (const [keyword, titles] of activeKeywords) {
       let matched = false;
 
       if (matchMode === 'partial') {
-        matched = lowerText.includes(keyword);
+        matched = text.toLowerCase().includes(keyword);
       } else if (matchMode === 'fuzzy') {
-        // Simple fuzzy: allow up to 1 character difference in the keyword length window
-        const idx = lowerText.indexOf(keyword[0].toLowerCase());
+        const idx = text.toLowerCase().indexOf(keyword[0]);
+
         if (idx !== -1) {
-          const window = lowerText.slice(idx, idx + keyword.length + 2);
+          const window = text
+            .toLowerCase()
+            .slice(idx, idx + keyword.length + 2);
+
           matched = levenshtein(window, keyword) <= 1;
         }
       } else {
-        // whole_word: match as a standalone word
-        const regex = new RegExp(`\\b${escapeRegex(keyword)}\\b`, 'i');
+        const regex = new RegExp(
+          `\\b${escapeRegex(keyword)}\\b`,
+          'i'
+        );
+
         matched = regex.test(text);
       }
 
-      if (matched) {
-        return { keyword, titles: [...titles] };
+      if (!matched) continue;
+
+      let bestResult = {
+        score: 0,
+        level: 'safe',
+        indicators: []
+      };
+
+      for (const title of titles) {
+        const result = window.SpoilerEngine.calculate(
+          text,
+          title
+        );
+
+        if (result.score > bestResult.score) {
+          bestResult = result;
+        }
       }
+
+      return {
+        keyword,
+        titles: [...titles],
+        score: bestResult.score,
+        level: bestResult.level,
+        indicators: bestResult.indicators
+      };
     }
+
     return null;
   }
 
@@ -233,7 +263,7 @@
       const text = getPostText(post);
       if (!text) continue;
       const match = checkForSpoilers(text);
-      if (match) {
+      if (match && match.score >= 30) {
         blurPost(post, match);
       }
     }

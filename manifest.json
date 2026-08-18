@@ -29,7 +29,7 @@
         "https://twitter.com/*",
         "https://www.reddit.com/*"
       ],
-      "js": ["content.js"],
+      "js": ["spoiler-engine.js", "content.js"],
       "css": ["spoilerblock.css"],
       "run_at": "document_idle"
     }
