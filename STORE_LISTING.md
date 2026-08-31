@@ -13,15 +13,15 @@ SpoilerBlock — Social Media Spoiler Blocker
 
 ### 📝 Short Description (Max 132 characters)
 ```
-Hides social media spoilers on Facebook, X (Twitter), and Reddit for movies, TV shows, games, and books with smart blur overlays.
+Hides social media spoilers on YouTube, X, Reddit, and Facebook for movies, TV shows, and games with smart blur overlays.
 ```
-*(Character count: 129 / 132)*
+*(Character count: 121 / 132)*
 
 ### 📖 Detailed Description (Markdown format for Store Listing)
 ```markdown
 Shield yourself from unwanted spoilers while browsing social media! 🛡️
 
-SpoilerBlock automatically scans and blurs spoilers for your favorite movies, TV shows, books, and video games across Facebook, X (Twitter), and Reddit.
+SpoilerBlock automatically scans and blurs spoilers for your favorite movies, TV shows, books, and video games across YouTube, X (Twitter), Reddit, and Facebook.
 
 Whether you're waiting for the weekend to binge the latest season finale or haven't watched the new blockbuster release yet, SpoilerBlock ensures your feeds remain completely spoiler-free.
 
@@ -29,7 +29,7 @@ Whether you're waiting for the weekend to binge the latest season finale or have
 
 ### ✨ Key Features
 
-* 🎯 **Smart Feed Detection:** Automatically identifies spoiler discussions across Facebook, X (Twitter), and Reddit in real time.
+* 🎯 **Smart Feed Detection:** Automatically identifies spoiler discussions and video thumbnails across YouTube, X (Twitter), Reddit, and Facebook in real time.
 * 🌫️ **Customizable Blur Overlays:** Choose between Heavy (12px) or Light (4px) blur effects with a clean "Possible Spoiler" overlay.
 * 👁️ **One-Click Reveal:** Click any blurred post to instantly reveal it if you change your mind.
 * ⚙️ **Flexible Matching Modes:**
@@ -44,6 +44,7 @@ Whether you're waiting for the weekend to binge the latest season finale or have
 
 ### 🎮 Supported Platforms
 
+* ✅ **YouTube** — Video titles, recommendation cards, and comments.
 * ✅ **X (Twitter)** — Feed tweets, replies, and quoted tweets.
 * ✅ **Reddit** — Post titles, previews, and comments.
 * ✅ **Facebook** — Main feed posts and community group updates.

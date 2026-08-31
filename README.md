@@ -45,6 +45,7 @@ Hides social media spoilers on Facebook, X (Twitter), and Reddit for movies, TV 
 
 ## Supported Platforms (Phase 1)
 
+- ✅ YouTube (Video titles, recommendations & comments)
 - ✅ Facebook
 - ✅ X (Twitter)
 - ✅ Reddit

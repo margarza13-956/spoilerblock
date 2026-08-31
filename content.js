@@ -17,6 +17,24 @@
       postContainers: ['.Post', 'article', 'shreddit-post', '[data-testid="post-container"]'],
       textContainers: ['.md', '[data-testid="post-content"]', 'h3', '.title'],
     },
+    youtube: {
+      postContainers: [
+        'ytd-rich-item-renderer',
+        'ytd-video-renderer',
+        'ytd-compact-video-renderer',
+        'ytd-grid-video-renderer',
+        'ytd-reel-item-renderer',
+        'ytd-comment-thread-renderer'
+      ],
+      textContainers: [
+        '#video-title',
+        '#video-title-link',
+        'yt-formatted-string#text',
+        '#content-text',
+        'h3',
+        '.title'
+      ],
+    },
   };
 
   function detectPlatform() {
@@ -24,6 +42,7 @@
     if (host.includes('facebook.com')) return 'facebook';
     if (host.includes('x.com') || host.includes('twitter.com')) return 'x';
     if (host.includes('reddit.com')) return 'reddit';
+    if (host.includes('youtube.com')) return 'youtube';
     return null;
   }
 
