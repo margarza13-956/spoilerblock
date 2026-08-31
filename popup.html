@@ -8,8 +8,8 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      width: 380px;
-      min-height: 420px;
+      width: 390px;
+      min-height: 480px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #0f0f14;
       color: #e4e4e7;
@@ -19,37 +19,82 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 20px;
+      padding: 14px 18px;
       background: linear-gradient(135deg, #6366f1, #8b5cf6);
       color: #fff;
     }
 
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .header h1 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
     }
 
-    .header-icon { font-size: 20px; }
+    .pro-badge {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #78350f;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: none;
+    }
+
+    .pro-badge.active {
+      display: inline-block;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-upgrade {
+      background: #fbbf24;
+      color: #78350f;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .btn-upgrade:hover {
+      background: #f59e0b;
+      transform: scale(1.03);
+    }
 
     .pause-toggle {
       background: rgba(255,255,255,0.2);
       border: none;
       color: #fff;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
     }
 
     .pause-toggle:hover { background: rgba(255,255,255,0.3); }
-    .pause-toggle.paused { background: rgba(239,68,68,0.8); }
+    .pause-toggle.paused { background: rgba(239,68,68,0.85); }
 
     .stats-bar {
       display: flex;
-      gap: 0;
-      padding: 12px 20px;
+      padding: 10px 18px;
       background: #18181b;
       border-bottom: 1px solid #27272a;
     }
@@ -60,30 +105,42 @@
     }
 
     .stat-value {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: #818cf8;
     }
 
     .stat-label {
-      font-size: 11px;
+      font-size: 10px;
       color: #71717a;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .section {
-      padding: 16px 20px;
+      padding: 14px 18px;
     }
 
     .section-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #71717a;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tier-limit-pill {
+      font-size: 10px;
+      color: #a1a1aa;
+      background: #27272a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
     }
 
     .add-form {
@@ -92,14 +149,19 @@
       gap: 8px;
     }
 
+    .input-row {
+      display: flex;
+      gap: 6px;
+    }
+
     .add-form input,
     .add-form select {
-      padding: 8px 12px;
+      padding: 8px 10px;
       background: #18181b;
       border: 1px solid #27272a;
       border-radius: 8px;
       color: #e4e4e7;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
     }
 
@@ -110,34 +172,56 @@
 
     .add-form input::placeholder { color: #52525b; }
 
-    .keyword-input-wrap {
-      position: relative;
+    .input-title { flex: 2; }
+    .select-type { flex: 1; }
+
+    .keyword-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
     }
 
     .keyword-hint {
       font-size: 11px;
-      color: #52525b;
-      margin-top: -2px;
-      margin-bottom: 2px;
+      color: #71717a;
+    }
+
+    .btn-auto-kw {
+      background: transparent;
+      border: 1px solid #6366f1;
+      color: #818cf8;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-auto-kw:hover {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
     }
 
     .btn-add {
       background: #6366f1;
       color: #fff;
       border: none;
-      padding: 9px;
+      padding: 8px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.2s;
+      margin-top: 2px;
     }
 
     .btn-add:hover { background: #5558e9; }
     .btn-add:disabled { background: #3f3f46; cursor: not-allowed; }
 
     .watchlist {
-      max-height: 260px;
+      max-height: 220px;
       overflow-y: auto;
     }
 
@@ -145,34 +229,35 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      padding: 10px 12px;
+      padding: 9px 11px;
       background: #18181b;
       border: 1px solid #27272a;
       border-radius: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .watchlist-item-info {
       flex: 1;
+      padding-right: 8px;
     }
 
     .watchlist-item-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: #e4e4e7;
     }
 
     .watchlist-item-meta {
-      font-size: 12px;
+      font-size: 11px;
       color: #71717a;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .watchlist-item-keywords {
       font-size: 11px;
       color: #818cf8;
-      margin-top: 4px;
-      line-height: 1.4;
+      margin-top: 3px;
+      line-height: 1.3;
     }
 
     .watchlist-item-actions {
@@ -186,9 +271,9 @@
       background: transparent;
       border: 1px solid #27272a;
       color: #a1a1aa;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 5px;
+      font-size: 10px;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -198,40 +283,233 @@
 
     .empty-state {
       text-align: center;
-      padding: 30px 20px;
+      padding: 24px 16px;
       color: #52525b;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .settings-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 0;
+      padding: 7px 0;
       border-bottom: 1px solid #27272a;
     }
 
     .settings-row:last-child { border-bottom: none; }
 
-    .settings-label { font-size: 13px; color: #a1a1aa; }
+    .settings-label {
+      font-size: 12px;
+      color: #a1a1aa;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
     .settings-row select {
-      padding: 4px 8px;
+      padding: 4px 6px;
       background: #18181b;
       border: 1px solid #27272a;
       border-radius: 6px;
       color: #e4e4e7;
-      font-size: 12px;
+      font-size: 11px;
       outline: none;
     }
 
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 18px;
+    }
+
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #3f3f46;
+      transition: .2s;
+      border-radius: 18px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider { background-color: #6366f1; }
+    input:checked + .slider:before { transform: translateX(16px); }
+
+    .pro-pill {
+      font-size: 9px;
+      background: #fbbf24;
+      color: #78350f;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
     .footer {
-      padding: 10px 20px;
+      padding: 10px 18px;
       text-align: center;
       font-size: 11px;
-      color: #3f3f46;
+      color: #52525b;
       border-top: 1px solid #27272a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
+    .footer a {
+      color: #818cf8;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+
+    /* Modal / Paywall */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: #71717a;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-body {
+      font-size: 12px;
+      color: #a1a1aa;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 10px 0;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      color: #e4e4e7;
+    }
+
+    .pricing-box {
+      background: #27272a;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .pricing-amount {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+
+    .pricing-sub {
+      font-size: 11px;
+      color: #a1a1aa;
+    }
+
+    .btn-stripe-pay {
+      width: 100%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn-stripe-pay:hover { opacity: 0.9; }
+
+    .license-input-box {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #27272a;
+      display: flex;
+      gap: 6px;
+    }
+
+    .license-input {
+      flex: 1;
+      padding: 6px 8px;
+      background: #0f0f14;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 11px;
+      outline: none;
+    }
+
+    .btn-activate {
+      background: #3f3f46;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-activate:hover { background: #52525b; }
 
     .scroll-thin::-webkit-scrollbar { width: 4px; }
     .scroll-thin::-webkit-scrollbar-track { background: transparent; }
@@ -240,11 +518,15 @@
 </head>
 <body>
   <div class="header">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span class="header-icon">🚫</span>
+    <div class="header-left">
+      <span style="font-size:18px;">🚫</span>
       <h1>SpoilerBlock</h1>
+      <span class="pro-badge" id="proBadge">PRO</span>
     </div>
-    <button class="pause-toggle" id="pauseBtn">Pause</button>
+    <div class="header-actions">
+      <button class="btn-upgrade" id="upgradeBtn">⚡ Upgrade</button>
+      <button class="pause-toggle" id="pauseBtn">Pause</button>
+    </div>
   </div>
 
   <div class="stats-bar">
@@ -263,28 +545,39 @@
   </div>
 
   <div class="section">
-    <div class="section-title">Add to Watchlist</div>
+    <div class="section-title">
+      <span>Add to Watchlist</span>
+      <span class="tier-limit-pill" id="tierLimitPill">Free Tier (3 Max)</span>
+    </div>
     <div class="add-form">
-      <input type="text" id="titleInput" placeholder="Title (e.g. Severance S2)" />
-      <select id="typeSelect">
-        <option value="tv">TV Show</option>
-        <option value="movie">Movie</option>
-        <option value="book">Book</option>
-        <option value="game">Game</option>
-      </select>
-      <div class="keyword-hint">Spoiler keywords (comma-separated, e.g. character names, plot points)</div>
-      <input type="text" id="keywordInput" placeholder="e.g. Mark, Helly, Cold Harbor" />
+      <div class="input-row">
+        <input type="text" class="input-title" id="titleInput" placeholder="Title (e.g. Severance S2)" />
+        <select class="select-type" id="typeSelect">
+          <option value="tv">TV Show</option>
+          <option value="movie">Movie</option>
+          <option value="sports">Sports / Team</option>
+          <option value="book">Book</option>
+          <option value="game">Game</option>
+        </select>
+      </div>
+      <div class="keyword-header">
+        <span class="keyword-hint">Spoiler keywords (comma-separated):</span>
+        <button class="btn-auto-kw" id="autoKwBtn">✨ Auto Keywords</button>
+      </div>
+      <input type="text" id="keywordInput" placeholder="e.g. Mark, Helly, Cold Harbor, Lumon" />
       <button class="btn-add" id="addBtn">Add Title</button>
     </div>
   </div>
 
   <div class="section">
-    <div class="section-title">My Watchlist (<span id="watchlistCount">0</span>)</div>
+    <div class="section-title">
+      <span>My Watchlist (<span id="watchlistCount">0</span>)</span>
+    </div>
     <div class="watchlist scroll-thin" id="watchlistContainer"></div>
   </div>
 
   <div class="section">
-    <div class="section-title">Settings</div>
+    <div class="section-title">Settings & Features</div>
     <div class="settings-row">
       <span class="settings-label">Match Mode</span>
       <select id="matchModeSelect">
@@ -294,16 +587,58 @@
       </select>
     </div>
     <div class="settings-row">
-      <span class="settings-label">Blur Level</span>
+      <span class="settings-label">Blur Strength</span>
       <select id="blurLevelSelect">
         <option value="heavy">Heavy (12px)</option>
         <option value="light">Light (4px)</option>
       </select>
     </div>
+    <div class="settings-row">
+      <span class="settings-label">
+        ⚽ Sports Live Scores Blackout
+        <span class="pro-pill">PRO</span>
+      </span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="sportsBlackoutToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
 
   <div class="footer">
-    SpoilerBlock v1.0.0 — Local matching only, no data sent to any server.
+    <span>SpoilerBlock v1.0.0</span>
+    <a id="footerLicenseLink">License & Pro</a>
+  </div>
+
+  <!-- Upgrade / Pro Modal -->
+  <div class="modal-backdrop" id="proModal">
+    <div class="modal-card">
+      <button class="modal-close" id="closeModalBtn">&times;</button>
+      <div class="modal-title">
+        <span>⚡</span> Upgrade to SpoilerBlock Pro
+      </div>
+      <div class="modal-body">
+        Get the ultimate spoiler protection across all your social feeds:
+        <ul class="feature-list">
+          <li>✨ <strong>Unlimited Watchlist Titles</strong> (Free is capped at 3)</li>
+          <li>🪄 <strong>1-Click Auto Keyword Packs</strong> for 5,000+ shows & movies</li>
+          <li>⚽ <strong>Live Sports Match & Score Blackout Mode</strong></li>
+          <li>🔄 <strong>Cross-Browser Cloud Sync</strong></li>
+        </ul>
+      </div>
+      <div class="pricing-box">
+        <div class="pricing-amount">$2.99 / month</div>
+        <div class="pricing-sub">or $19.99/year (Cancel anytime)</div>
+      </div>
+      <a href="https://buy.stripe.com/test_spoilerblock_pro" target="_blank" class="btn-stripe-pay" id="stripeCheckoutBtn">
+        Get Pro with Stripe 💳
+      </a>
+
+      <div class="license-input-box">
+        <input type="text" class="license-input" id="licenseKeyInput" placeholder="Enter License Key / Code" />
+        <button class="btn-activate" id="activateLicenseBtn">Activate</button>
+      </div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

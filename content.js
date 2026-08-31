@@ -81,6 +81,17 @@
         activeKeywords.get(kw.toLowerCase()).add(title.title);
       }
     }
+
+    // Pro Sports Blackout Mode
+    if (cachedState?.settings?.sportsBlackout) {
+      const sportsKws = ['final score', 'full time', 'game winner', 'buzzer beater', 'race result', 'grand prix winner'];
+      for (const kw of sportsKws) {
+        if (!activeKeywords.has(kw)) {
+          activeKeywords.set(kw, new Set());
+        }
+        activeKeywords.get(kw).add('Live Sports');
+      }
+    }
   }
 
   function checkForSpoilers(text) {

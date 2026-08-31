@@ -5,17 +5,31 @@
 
   // ── Element refs ──────────────────────────────────────────────────
   const pauseBtn = document.getElementById('pauseBtn');
+  const upgradeBtn = document.getElementById('upgradeBtn');
+  const proBadge = document.getElementById('proBadge');
+  const tierLimitPill = document.getElementById('tierLimitPill');
   const titleInput = document.getElementById('titleInput');
   const typeSelect = document.getElementById('typeSelect');
   const keywordInput = document.getElementById('keywordInput');
+  const autoKwBtn = document.getElementById('autoKwBtn');
   const addBtn = document.getElementById('addBtn');
   const watchlistContainer = document.getElementById('watchlistContainer');
   const watchlistCount = document.getElementById('watchlistCount');
   const matchModeSelect = document.getElementById('matchModeSelect');
   const blurLevelSelect = document.getElementById('blurLevelSelect');
+  const sportsBlackoutToggle = document.getElementById('sportsBlackoutToggle');
   const statBlocked = document.getElementById('statBlocked');
   const statRevealed = document.getElementById('statRevealed');
   const statFP = document.getElementById('statFP');
+  const footerLicenseLink = document.getElementById('footerLicenseLink');
+
+  // Modal elements
+  const proModal = document.getElementById('proModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const licenseKeyInput = document.getElementById('licenseKeyInput');
+  const activateLicenseBtn = document.getElementById('activateLicenseBtn');
+
+  let currentState = null;
 
   // ── Messaging ─────────────────────────────────────────────────────
   function sendMessage(message) {
@@ -25,7 +39,6 @@
   }
 
   function notifyContentScripts() {
-    // Tell content scripts to reload state
     chrome.tabs.query({}, (tabs) => {
       for (const tab of tabs) {
         chrome.tabs.sendMessage(tab.id, { type: 'STATE_UPDATED' }).catch(() => {});
@@ -33,8 +46,33 @@
     });
   }
 
+  function showProModal() {
+    proModal.classList.add('open');
+  }
+
+  function hideProModal() {
+    proModal.classList.remove('open');
+  }
+
   // ── Render ─────────────────────────────────────────────────────────
   function renderState(state) {
+    currentState = state;
+
+    // Pro tier status
+    const isPro = !!state.isPro;
+    if (isPro) {
+      proBadge.classList.add('active');
+      upgradeBtn.style.display = 'none';
+      tierLimitPill.textContent = 'Pro Tier (Unlimited)';
+      tierLimitPill.style.color = '#fbbf24';
+    } else {
+      proBadge.classList.remove('active');
+      upgradeBtn.style.display = 'flex';
+      const activeCount = (state.watchlist || []).filter((t) => !t.finished).length;
+      tierLimitPill.textContent = `Free Tier (${activeCount}/3)`;
+      tierLimitPill.style.color = activeCount >= 3 ? '#ef4444' : '#a1a1aa';
+    }
+
     // Stats
     statBlocked.textContent = state.stats?.blockedCount || 0;
     statRevealed.textContent = state.stats?.revealedCount || 0;
@@ -52,6 +90,7 @@
     // Settings
     matchModeSelect.value = state.settings?.matchMode || 'whole_word';
     blurLevelSelect.value = state.settings?.blurLevel || 'heavy';
+    sportsBlackoutToggle.checked = !!state.settings?.sportsBlackout;
 
     // Watchlist
     const watchlist = state.watchlist || [];
@@ -60,7 +99,7 @@
     if (watchlist.length === 0) {
       watchlistContainer.innerHTML = `
         <div class="empty-state">
-          No titles yet. Add a movie, show, book, or game above to start blocking spoilers.
+          No titles yet. Add a movie, show, or game above to start blocking spoilers!
         </div>
       `;
       return;
@@ -69,6 +108,7 @@
     const typeLabels = {
       tv: 'TV Show',
       movie: 'Movie',
+      sports: 'Sports / Team',
       book: 'Book',
       game: 'Game',
     };
@@ -137,6 +177,50 @@
     refresh();
   });
 
+  upgradeBtn.addEventListener('click', showProModal);
+  footerLicenseLink.addEventListener('click', showProModal);
+  closeModalBtn.addEventListener('click', hideProModal);
+  proModal.addEventListener('click', (e) => {
+    if (e.target === proModal) hideProModal();
+  });
+
+  // Auto-keywords button
+  autoKwBtn.addEventListener('click', async () => {
+    const title = titleInput.value.trim();
+    if (!title) {
+      titleInput.placeholder = 'Type a title first...';
+      titleInput.style.borderColor = '#6366f1';
+      setTimeout(() => { titleInput.style.borderColor = ''; }, 1200);
+      return;
+    }
+
+    autoKwBtn.textContent = 'Fetching...';
+    const res = await sendMessage({ type: 'GET_AUTO_KEYWORDS', title });
+    autoKwBtn.textContent = '✨ Auto Keywords';
+
+    if (res?.keywords && res.keywords.length > 0) {
+      keywordInput.value = res.keywords.join(', ');
+    }
+  });
+
+  // Activate license key
+  activateLicenseBtn.addEventListener('click', async () => {
+    const key = licenseKeyInput.value.trim();
+    if (!key) return;
+
+    activateLicenseBtn.textContent = 'Validating...';
+    const res = await sendMessage({ type: 'ACTIVATE_LICENSE', licenseKey: key });
+    activateLicenseBtn.textContent = 'Activate';
+
+    if (res?.success) {
+      hideProModal();
+      alert('🎉 SpoilerBlock Pro activated successfully!');
+      refresh();
+    } else {
+      alert(res?.error || 'Invalid license key.');
+    }
+  });
+
   addBtn.addEventListener('click', async () => {
     const title = titleInput.value.trim();
     if (!title) {
@@ -150,12 +234,17 @@
       .map((k) => k.trim())
       .filter(Boolean);
 
-    await sendMessage({
+    const res = await sendMessage({
       type: 'ADD_TITLE',
       title,
       mediaType: typeSelect.value,
       keywords,
     });
+
+    if (res?.error === 'TIER_LIMIT_REACHED') {
+      showProModal();
+      return;
+    }
 
     titleInput.value = '';
     keywordInput.value = '';
@@ -179,6 +268,20 @@
     await sendMessage({
       type: 'UPDATE_SETTINGS',
       settings: { blurLevel: blurLevelSelect.value },
+    });
+    refresh();
+  });
+
+  sportsBlackoutToggle.addEventListener('change', async () => {
+    if (!currentState?.isPro && sportsBlackoutToggle.checked) {
+      sportsBlackoutToggle.checked = false;
+      showProModal();
+      return;
+    }
+
+    await sendMessage({
+      type: 'UPDATE_SETTINGS',
+      settings: { sportsBlackout: sportsBlackoutToggle.checked },
     });
     refresh();
   });

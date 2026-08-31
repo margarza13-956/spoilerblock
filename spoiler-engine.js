@@ -23,6 +23,14 @@
     { pattern: /\b(returns|returning|comes back)\b/i, score: 15 }
   ];
 
+  const SPORTS_PATTERNS = [
+    { pattern: /\b\d{1,3}\s*[-–]\s*\d{1,3}\b/, score: 60 },
+    { pattern: /\b(final score|full time|ft:|game winner|buzzer beater)\b/i, score: 55 },
+    { pattern: /\b(defeated|defeats|blowout|beat|beats|upset win|clean sweep)\b/i, score: 45 },
+    { pattern: /\b(pole position|grand prix winner|podium finish|dnf|race result)\b/i, score: 50 },
+    { pattern: /\b(champion|championship winner|mvp|golden boot|hat-trick)\b/i, score: 40 }
+  ];
+
   const NON_SPOILER_PATTERNS = [
     /\b(excited to see|can't wait to see|cant wait to see)\b/i,
     /\b(going to watch|gonna watch|about to watch)\b/i,
@@ -90,6 +98,16 @@
 
     // Medium indicators.
     for (const item of MEDIUM_PATTERNS) {
+      const match = normalizedText.match(item.pattern);
+
+      if (match) {
+        score += item.score;
+        indicators.add(match[0]);
+      }
+    }
+
+    // Sports indicators.
+    for (const item of SPORTS_PATTERNS) {
       const match = normalizedText.match(item.pattern);
 
       if (match) {
