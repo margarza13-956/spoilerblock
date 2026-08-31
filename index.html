@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpoilerBlock — Smart Social Media Spoiler Blocker</title>
+  <meta name="description" content="Shield your social feeds from TV, movie, and sports spoilers on YouTube, X (Twitter), Reddit, and Facebook with smart real-time blur overlays.">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #a855f7;
+      --gold: #f59e0b;
+      --bg: #09090b;
+      --card-bg: #18181b;
+      --border: #27272a;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    .btn-nav-install {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      transition: background 0.2s;
+    }
+
+    .btn-nav-install:hover { background: var(--primary-hover); }
+
+    .hero {
+      max-width: 900px;
+      margin: 60px auto 40px;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff, #a1a1aa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-secondary {
+      background: #27272a;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:hover { background: #3f3f46; }
+
+    /* Interactive Demo Sandbox */
+    .demo-section {
+      max-width: 700px;
+      margin: 50px auto 80px;
+      padding: 0 20px;
+    }
+
+    .demo-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .mock-post {
+      position: relative;
+      padding: 18px;
+      background: #0f0f14;
+      border-radius: 12px;
+      border: 1px solid #27272a;
+    }
+
+    .mock-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .mock-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .mock-content {
+      font-size: 15px;
+      color: #e4e4e7;
+      line-height: 1.5;
+      transition: filter 0.3s ease;
+    }
+
+    .mock-content.blurred {
+      filter: blur(10px);
+      user-select: none;
+    }
+
+    .demo-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(24, 24, 27, 0.95);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+      width: 85%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: none;
+    }
+
+    .demo-overlay.visible { display: block; }
+
+    .demo-overlay strong {
+      display: block;
+      color: #fff;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .demo-overlay p {
+      font-size: 12px;
+      color: #a1a1aa;
+      margin-bottom: 10px;
+    }
+
+    .btn-reveal-demo {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-reveal-demo:hover { background: var(--primary-hover); }
+
+    /* Features Grid */
+    .features {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      padding: 0 20px;
+    }
+
+    .section-headline {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-headline h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: #a5b4fc;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="#" class="logo">
+      <span>🚫</span> SpoilerBlock
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#demo">Live Demo</a>
+      <a href="privacy-policy.html">Privacy</a>
+      <a href="https://github.com/margarza13-956/spoilerblock" target="_blank">GitHub</a>
+      <a href="https://chrome.google.com/webstore/devconsole" class="btn-nav-install">Get Extension</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="badge-pill">✨ Manifest V3 &bull; 100% Privacy-First &bull; Zero Tracking</div>
+    <h1>Shield Your Social Feeds From Unwanted Spoilers</h1>
+    <p>Automatically detect and blur spoilers for movies, TV shows, and live sports on YouTube, X (Twitter), Reddit, and Facebook in real time.</p>
+    <div class="hero-cta">
+      <a href="https://chrome.google.com/webstore/devconsole" class="btn-primary">
+        Add to Browser — Free 🚀
+      </a>
+      <a href="https://github.com/margarza13-956/spoilerblock" target="_blank" class="btn-secondary">
+        View on GitHub ⭐
+      </a>
+    </div>
+  </header>
+
+  <!-- Interactive Demo Sandbox -->
+  <section class="demo-section" id="demo">
+    <div class="demo-card">
+      <div class="demo-header">
+        <span>🎮 Interactive Preview: Protected Watchlist: "Severance"</span>
+        <button id="toggleSimulationBtn" style="background:transparent;border:1px solid #3f3f46;color:#a1a1aa;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:11px;">Reset Simulation</button>
+      </div>
+
+      <div class="mock-post">
+        <div class="mock-author">
+          <div class="mock-avatar">🎬</div>
+          <div>
+            <strong style="font-size:13px;color:#fff;">TV Fanatic @tvfan</strong>
+            <div style="font-size:11px;color:#71717a;">Just now &bull; X (Twitter)</div>
+          </div>
+        </div>
+        <div class="mock-content blurred" id="mockContent">
+          I CANNOT BELIEVE THE ENDING OF SEVERANCE! When Mark finds out about Helly's true identity and Milchick activates the Overtime Contingency, my jaw hit the floor! 🤯
+        </div>
+
+        <div class="demo-overlay visible" id="demoOverlay">
+          <strong>🚫 Possible Spoiler Detected</strong>
+          <p>May contain spoilers for: <strong>Severance</strong> (Mark, Helly, Lumon)</p>
+          <button class="btn-reveal-demo" id="demoRevealBtn">Click to Reveal</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="features" id="features">
+    <div class="section-headline">
+      <h2>Everything You Need to Browse Safely</h2>
+      <p style="color:var(--text-muted);">Built with smart heuristics and zero external tracking.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon">📺</div>
+        <h3>YouTube & Social Feeds</h3>
+        <p>Scans YouTube video titles, thumbnails, and comments, plus Twitter/X feeds, Reddit threads, and Facebook posts.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🪄</div>
+        <h3>1-Click Auto Keywords</h3>
+        <p>Type any popular show or movie, and automatically generate character names and plot indicators without manual typing.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⚽</div>
+        <h3>Sports Blackout Mode</h3>
+        <p>Watching the match on delay? Automatically mask scores, race outcomes, and game-winner posts until you catch up.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🌫️</div>
+        <h3>Custom Blur Strength</h3>
+        <p>Choose between Heavy (12px) or Light (4px) blur with instant one-click reveal when you want to read a post.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>100% Privacy Guarantee</h3>
+        <p>All pattern matching happens directly in your browser. Zero telemetry, zero browsing history sent anywhere.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Ultralight Manifest V3</h3>
+        <p>Engineered for maximum speed and battery efficiency with high-performance DOM observers.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>&copy; 2026 SpoilerBlock. Built by <a href="https://github.com/margarza13-956" target="_blank">margarza13-956</a>.</p>
+    <div style="margin-top:12px;">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="https://github.com/margarza13-956/spoilerblock">GitHub Repository</a>
+    </div>
+  </footer>
+
+  <script>
+    const mockContent = document.getElementById('mockContent');
+    const demoOverlay = document.getElementById('demoOverlay');
+    const demoRevealBtn = document.getElementById('demoRevealBtn');
+    const toggleSimulationBtn = document.getElementById('toggleSimulationBtn');
+
+    demoRevealBtn.addEventListener('click', () => {
+      mockContent.classList.remove('blurred');
+      demoOverlay.classList.remove('visible');
+    });
+
+    toggleSimulationBtn.addEventListener('click', () => {
+      mockContent.classList.add('blurred');
+      demoOverlay.classList.add('visible');
+    });
+  </script>
+</body>
+</html>

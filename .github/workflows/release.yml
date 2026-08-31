@@ -1,0 +1,43 @@
+name: Build & Publish Release Bundle
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Package Extension ZIP
+        run: |
+          chmod +x ./package.sh
+          ./package.sh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/*.zip
+          name: SpoilerBlock Release ${{ github.ref_name }}
+          body: |
+            ## 🛡️ SpoilerBlock Release ${{ github.ref_name }}
+            
+            ### What's New:
+            - Full Manifest V3 extension ready for Chrome, Edge, and Brave
+            - Platform support for YouTube, X (Twitter), Reddit, and Facebook
+            - Pro tier with 1-Click Auto Keyword Packs & Sports Blackout Mode
+            - 100% on-device matching with zero telemetry
+            
+            **Installation:**
+            1. Download `spoilerblock-v1.0.0.zip` below
+            2. Extract and load unpacked into `chrome://extensions` (with Developer mode enabled).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
