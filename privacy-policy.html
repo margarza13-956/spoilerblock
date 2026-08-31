@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - SpoilerBlock</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #fff;
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    h2 {
+      color: var(--primary);
+      margin-top: 32px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    p, li {
+      color: var(--text-muted);
+    }
+    strong {
+      color: var(--text);
+    }
+    .highlight-box {
+      background: rgba(99, 102, 241, 0.1);
+      border-left: 4px solid var(--primary);
+      padding: 16px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ SpoilerBlock Privacy Policy</h1>
+    <p><em>Effective Date: August 31, 2026</em></p>
+
+    <div class="highlight-box">
+      <strong>Summary:</strong> SpoilerBlock is built with a <strong>privacy-first, zero-data-collection architecture</strong>. All keyword matching, feed scanning, and settings storage occur 100% locally in your browser. We do not track you, collect personal data, or transmit your browsing information to any external server.
+    </div>
+
+    <h2>1. Information Collection and Use</h2>
+    <p>SpoilerBlock does <strong>NOT</strong> collect, transmit, store, or sell any personal information, browsing history, user feeds, or watchlist keywords to any remote servers. Specifically:</p>
+    <ul>
+      <li><strong>No Account Required:</strong> You do not need to register an account or provide any personal details to use SpoilerBlock.</li>
+      <li><strong>No Analytics or Telemetry:</strong> We do not track your browsing habits, page visits, clicks, or extension interactions.</li>
+      <li><strong>No Third-Party Sharing:</strong> No data is ever shared with, sold to, or monetized by third parties or advertisers.</li>
+    </ul>
+
+    <h2>2. Local Storage (`chrome.storage.local`)</h2>
+    <p>SpoilerBlock utilizes standard browser local storage (`chrome.storage.local`) solely on your device to persist:</p>
+    <ul>
+      <li>Your custom watchlist titles and keyword filters.</li>
+      <li>Your local configuration preferences (e.g., match mode, blur strength, pause toggle).</li>
+      <li>Aggregated local statistics (e.g., total count of posts blocked on your device).</li>
+    </ul>
+    <p>This data never leaves your computer and is immediately erased if you uninstall the extension or clear your browser data.</p>
+
+    <h2>3. Permissions Justification</h2>
+    <ul>
+      <li><strong>`storage`:</strong> Required strictly to save your watchlist items and user preferences locally in your browser.</li>
+      <li><strong>`activeTab`:</strong> Required to allow the popup to interact with the active social media tab when triggered.</li>
+      <li><strong>Host Permissions (`facebook.com`, `x.com`, `twitter.com`, `reddit.com`):</strong> Required solely to inject the local content script (`content.js`) and stylesheet (`spoilerblock.css`) on supported social platforms to detect and blur spoiler posts in real-time.</li>
+    </ul>
+
+    <h2>4. Third-Party Websites</h2>
+    <p>SpoilerBlock operates on supported social media platforms (such as Facebook, X, and Reddit). We do not control and are not responsible for the privacy practices of those third-party websites.</p>
+
+    <h2>5. Changes to This Privacy Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Any updates will be reflected on this page with an updated effective date.</p>
+
+    <h2>6. Contact</h2>
+    <p>If you have any questions or feedback regarding this Privacy Policy, please open an issue on the official GitHub repository: <a href="https://github.com/margarza13-956/spoilerblock" style="color: var(--primary);">github.com/margarza13-956/spoilerblock</a>.</p>
+
+    <div class="footer">
+      &copy; 2026 SpoilerBlock. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>

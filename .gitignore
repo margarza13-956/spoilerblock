@@ -10,6 +10,9 @@ Thumbs.db
 *.zip
 *.crx
 *.pem
+dist/
+__pycache__/
+icons/__pycache__/
 
 # Generated icons (keep PNGs, exclude generator script if desired)
 # icons/gen_icons.py
