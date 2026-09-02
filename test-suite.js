@@ -92,8 +92,39 @@ assert(validateLicenseKey('12345678') === true, 'Accepts 8+ char alphanumeric ke
 assert(validateLicenseKey('ABC') === false, 'Rejects short invalid keys');
 assert(validateLicenseKey('') === false, 'Rejects empty key');
 
-// ── 5. Manifest V3 & Extension Files Validation ──────────────────────────────
-console.log('\n5. Testing Manifest V3 & File Integrity:');
+// ── 5. Watchlist Import & Export Merge Validation ─────────────────────────────
+console.log('\n5. Testing Watchlist Import & Export Logic:');
+
+function mergeWatchlists(existing, imported) {
+  const stateList = [...existing];
+  for (const item of imported) {
+    if (!item.title || !Array.isArray(item.keywords)) continue;
+    const exists = stateList.find((t) => t.title.toLowerCase() === item.title.toLowerCase());
+    if (exists) {
+      exists.keywords = Array.from(new Set([...exists.keywords, ...item.keywords]));
+    } else {
+      stateList.push({
+        id: `sb_${Date.now()}`,
+        title: item.title,
+        type: item.type || 'tv',
+        keywords: item.keywords,
+        finished: !!item.finished,
+        addedAt: item.addedAt || Date.now()
+      });
+    }
+  }
+  return stateList;
+}
+
+const existingList = [{ id: '1', title: 'Severance', type: 'tv', keywords: ['Mark'], finished: false }];
+const importedList = [{ title: 'Severance', keywords: ['Helly', 'Lumon'] }, { title: 'Arcane', keywords: ['Jinx'] }];
+const merged = mergeWatchlists(existingList, importedList);
+
+assert(merged.length === 2, 'Merges imported list and handles distinct titles');
+assert(merged[0].keywords.includes('Helly') && merged[0].keywords.includes('Mark'), 'Deduplicates and merges keywords into existing titles');
+
+// ── 6. Manifest V3 & File Integrity Validation ──────────────────────────────
+console.log('\n6. Testing Manifest V3 & File Integrity:');
 
 const manifestPath = path.join(__dirname, 'manifest.json');
 const manifestContent = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
@@ -101,6 +132,7 @@ const manifestContent = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 assert(manifestContent.manifest_version === 3, 'Manifest version is 3');
 assert(manifestContent.permissions.includes('storage'), 'Includes storage permission');
 assert(manifestContent.permissions.includes('activeTab'), 'Includes activeTab permission');
+assert(manifestContent.permissions.includes('contextMenus'), 'Includes contextMenus permission');
 
 const expectedHosts = [
   'https://www.facebook.com/*',

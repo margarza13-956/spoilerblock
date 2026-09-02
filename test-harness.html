@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpoilerBlock — 8-Platform Interactive Test Harness</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card: #18181b;
+      --border: #27272a;
+      --primary: #6366f1;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 30px 20px;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 { font-size: 26px; margin-bottom: 8px; }
+    p.sub { color: var(--muted); margin-bottom: 24px; font-size: 14px; }
+    
+    .controls {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .controls input, .controls select, .controls button {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #0f0f14;
+      color: #fff;
+      font-size: 13px;
+    }
+    .controls button {
+      background: var(--primary);
+      cursor: pointer;
+      font-weight: 600;
+      border: none;
+    }
+    .controls button:hover { opacity: 0.9; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .platform-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+    }
+    .platform-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+    }
+    .post-content {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e4e4e7;
+      transition: filter 0.3s ease;
+    }
+    .blurred {
+      filter: blur(12px);
+      user-select: none;
+    }
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(24, 24, 27, 0.95);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-align: center;
+      width: 85%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      display: none;
+    }
+    .overlay.visible { display: block; }
+    .overlay strong { font-size: 13px; color: #fff; display: block; margin-bottom: 4px; }
+    .overlay p { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .overlay button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ SpoilerBlock 8-Platform Test Harness</h1>
+    <p class="sub">Interactive sandbox simulating real-time feed elements across all 8 supported social networks.</p>
+
+    <div class="controls">
+      <label style="font-size:13px;font-weight:600;">Active Watchlist:</label>
+      <input type="text" id="filterInput" value="Severance, House of the Dragon, F1" style="width:280px;" />
+      <button id="applyBtn">Apply Filters & Scan</button>
+      <button id="revealAllBtn" style="background:#27272a;">Reveal All</button>
+      <button id="blurAllBtn" style="background:#27272a;">Blur All</button>
+    </div>
+
+    <div class="grid">
+      <!-- 1. YouTube -->
+      <div class="platform-card" id="card-yt">
+        <span class="platform-badge">▶️ YouTube</span>
+        <div class="post-content blurred">
+          <strong>SEVERANCE SEASON 2 FINALE REACTION!</strong><br>
+          Mark Scout makes the ultimate sacrifice in the Lumon break room!
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Possible Spoiler</strong>
+          <p>Spoilers for: <strong>Severance</strong></p>
+          <button onclick="toggleCard('card-yt')">Reveal</button>
+        </div>
+      </div>
+
+      <!-- 2. X (Twitter) -->
+      <div class="platform-card" id="card-x">
+        <span class="platform-badge">𝕏 X (Twitter)</span>
+        <div class="post-content blurred">
+          @cinema_leaks: That House of the Dragon plot twist with Aemond and Vhagar killed me! #HOTD
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Possible Spoiler</strong>
+          <p>Spoilers for: <strong>House of the Dragon</strong></p>
+          <button onclick="toggleCard('card-x')">Reveal</button>
+        </div>
+      </div>
+
+      <!-- 3. Reddit -->
+      <div class="platform-card" id="card-reddit">
+        <span class="platform-badge">🤖 Reddit</span>
+        <div class="post-content blurred">
+          [r/SeveranceAppleTVPlus] Ending explained: Why Irving's secret identity changes everything for Lumon.
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Possible Spoiler</strong>
+          <p>Spoilers for: <strong>Severance</strong></p>
+          <button onclick="toggleCard('card-reddit')">Reveal</button>
+        </div>
+      </div>
+
+      <!-- 4. Facebook -->
+      <div class="platform-card" id="card-fb">
+        <span class="platform-badge">📘 Facebook</span>
+        <div class="post-content blurred">
+          Game of Thrones Fans Group: "Daemon Targaryen and Rhaenyra battle on Dragonstone!"
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Possible Spoiler</strong>
+          <p>Spoilers for: <strong>House of the Dragon</strong></p>
+          <button onclick="toggleCard('card-fb')">Reveal</button>
+        </div>
+      </div>
+
+      <!-- 5. Instagram -->
+      <div class="platform-card" id="card-ig">
+        <span class="platform-badge">📷 Instagram</span>
+        <div class="post-content blurred">
+          @f1official: Race Results! Verstappen takes pole position and Grand Prix Winner trophy at Silverstone! 🏆
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Sports Blackout</strong>
+          <p>Spoilers for: <strong>Formula 1</strong></p>
+          <button onclick="toggleCard('card-ig')">Reveal</button>
+        </div>
+      </div>
+
+      <!-- 6. Threads -->
+      <div class="platform-card" id="card-threads">
+        <span class="platform-badge">🧵 Threads</span>
+        <div class="post-content blurred">
+          @tv_recap: Just watched Helly R discover her true outie family name in Severance. Mind blown.
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Possible Spoiler</strong>
+          <p>Spoilers for: <strong>Severance</strong></p>
+          <button onclick="toggleCard('card-threads')">Reveal</button>
+        </div>
+      </div>
+
+      <!-- 7. TikTok -->
+      <div class="platform-card" id="card-tiktok">
+        <span class="platform-badge">🎵 TikTok</span>
+        <div class="post-content blurred">
+          #severance #spoilers Major leak about what happens to Dylan G in episode 8!
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Possible Spoiler</strong>
+          <p>Spoilers for: <strong>Severance</strong></p>
+          <button onclick="toggleCard('card-tiktok')">Reveal</button>
+        </div>
+      </div>
+
+      <!-- 8. Bluesky -->
+      <div class="platform-card" id="card-bsky">
+        <span class="platform-badge">🦋 Bluesky</span>
+        <div class="post-content blurred">
+          @dragonrider.bsky.social: Alicent Hightower's confession to Rhaenyra in the series finale... tears!
+        </div>
+        <div class="overlay visible">
+          <strong>🚫 Possible Spoiler</strong>
+          <p>Spoilers for: <strong>House of the Dragon</strong></p>
+          <button onclick="toggleCard('card-bsky')">Reveal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleCard(cardId) {
+      const card = document.getElementById(cardId);
+      const content = card.querySelector('.post-content');
+      const overlay = card.querySelector('.overlay');
+      content.classList.toggle('blurred');
+      overlay.classList.toggle('visible');
+    }
+
+    document.getElementById('revealAllBtn').addEventListener('click', () => {
+      document.querySelectorAll('.post-content').forEach(el => el.classList.remove('blurred'));
+      document.querySelectorAll('.overlay').forEach(el => el.classList.remove('visible'));
+    });
+
+    document.getElementById('blurAllBtn').addEventListener('click', () => {
+      document.querySelectorAll('.post-content').forEach(el => el.classList.add('blurred'));
+      document.querySelectorAll('.overlay').forEach(el => el.classList.add('visible'));
+    });
+  </script>
+</body>
+</html>

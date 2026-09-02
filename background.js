@@ -1,5 +1,5 @@
 // SpoilerBlock — Background Service Worker
-// Manages watchlist state, Pro membership, and handles messages from content scripts and popup
+// Manages watchlist state, Pro membership, context menus, and handles messages from content scripts and popup
 
 const POPULAR_KEYWORD_PACKS = {
   severance: ['Mark Scout', 'Helly R', 'Dylan G', 'Irving', 'Milchick', 'Cobel', 'Cold Harbor', 'Lumon', 'Kier Eagan', 'Innie', 'Outie', 'Overtime Contingency', 'Break Room'],
@@ -49,7 +49,7 @@ const DEFAULT_STATE = {
   },
 };
 
-// Initialize default state on install
+// Initialize default state & context menus on install
 chrome.runtime.onInstalled.addListener(async () => {
   const stored = await chrome.storage.local.get('spoilerblock');
   if (!stored.spoilerblock) {
@@ -61,8 +61,59 @@ chrome.runtime.onInstalled.addListener(async () => {
     state.stats = { ...DEFAULT_STATE.stats, ...(stored.spoilerblock.stats || {}) };
     await chrome.storage.local.set({ spoilerblock: state });
   }
+
+  // Create context menu for quick keyword blocking
+  if (chrome.contextMenus) {
+    chrome.contextMenus.removeAll(() => {
+      chrome.contextMenus.create({
+        id: 'spoilerblock-quick-block',
+        title: '🛡️ Block "%s" in SpoilerBlock',
+        contexts: ['selection']
+      });
+    });
+  }
+
   console.log('[SpoilerBlock] Installed / Updated. State ready.');
 });
+
+// Handle context menu click
+if (chrome.contextMenus && chrome.contextMenus.onClicked) {
+  chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+    if (info.menuItemId === 'spoilerblock-quick-block' && info.selectionText) {
+      const keyword = info.selectionText.trim();
+      if (!keyword) return;
+
+      const data = await chrome.storage.local.get('spoilerblock');
+      const state = data.spoilerblock || DEFAULT_STATE;
+
+      let quickList = state.watchlist.find((t) => t.title === 'Quick Blocklist');
+      if (!quickList) {
+        quickList = {
+          id: typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `sb_${Date.now()}`,
+          title: 'Quick Blocklist',
+          type: 'tv',
+          keywords: [keyword],
+          finished: false,
+          addedAt: Date.now(),
+        };
+        state.watchlist.push(quickList);
+      } else {
+        if (!quickList.keywords.includes(keyword)) {
+          quickList.keywords.push(keyword);
+        }
+      }
+
+      await chrome.storage.local.set({ spoilerblock: state });
+
+      // Notify content scripts in all tabs
+      chrome.tabs.query({}, (tabs) => {
+        for (const t of tabs) {
+          chrome.tabs.sendMessage(t.id, { type: 'STATE_UPDATED' }).catch(() => {});
+        }
+      });
+    }
+  });
+}
 
 // Handle messages from content scripts and popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -71,6 +122,34 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       case 'GET_STATE': {
         const data = await chrome.storage.local.get('spoilerblock');
         sendResponse(data.spoilerblock || DEFAULT_STATE);
+        break;
+      }
+
+      case 'IMPORT_WATCHLIST': {
+        const data = await chrome.storage.local.get('spoilerblock');
+        const state = data.spoilerblock || DEFAULT_STATE;
+        const importedList = message.watchlist || [];
+
+        // Validate and merge items
+        for (const item of importedList) {
+          if (!item.title || !Array.isArray(item.keywords)) continue;
+          const exists = state.watchlist.find((t) => t.title.toLowerCase() === item.title.toLowerCase());
+          if (exists) {
+            exists.keywords = Array.from(new Set([...exists.keywords, ...item.keywords]));
+          } else {
+            state.watchlist.push({
+              id: typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `sb_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+              title: item.title,
+              type: item.type || 'tv',
+              keywords: item.keywords,
+              finished: !!item.finished,
+              addedAt: item.addedAt || Date.now()
+            });
+          }
+        }
+
+        await chrome.storage.local.set({ spoilerblock: state });
+        sendResponse({ success: true, count: state.watchlist.length });
         break;
       }
 

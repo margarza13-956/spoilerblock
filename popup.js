@@ -22,6 +22,9 @@
   const statRevealed = document.getElementById('statRevealed');
   const statFP = document.getElementById('statFP');
   const footerLicenseLink = document.getElementById('footerLicenseLink');
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const importFileInput = document.getElementById('importFileInput');
 
   // Modal elements
   const proModal = document.getElementById('proModal');
@@ -284,6 +287,55 @@
       settings: { sportsBlackout: sportsBlackoutToggle.checked },
     });
     refresh();
+  });
+
+  // Export Watchlist JSON
+  exportBtn.addEventListener('click', () => {
+    const watchlist = currentState?.watchlist || [];
+    if (watchlist.length === 0) {
+      alert('Your watchlist is currently empty.');
+      return;
+    }
+
+    const exportData = JSON.stringify(watchlist, null, 2);
+    const blob = new Blob([exportData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `spoilerblock-watchlist-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Import Watchlist JSON
+  importBtn.addEventListener('click', () => {
+    importFileInput.click();
+  });
+
+  importFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        if (!Array.isArray(parsed)) {
+          alert('Invalid watchlist format. Must be a JSON array.');
+          return;
+        }
+
+        const res = await sendMessage({ type: 'IMPORT_WATCHLIST', watchlist: parsed });
+        if (res?.success) {
+          alert(`Successfully imported ${parsed.length} titles!`);
+          refresh();
+        }
+      } catch (err) {
+        alert('Failed to read JSON file. Please ensure it is valid JSON.');
+      }
+    };
+    reader.readAsText(file);
+    importFileInput.value = '';
   });
 
   // ── Init ───────────────────────────────────────────────────────────
