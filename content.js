@@ -1,21 +1,21 @@
 // SpoilerBlock — Content Script
-// Scans social media feeds for spoiler content and blurs matching posts
+// Scans social media feeds for spoiler content and blurs matching posts in real time
 
 (() => {
   'use strict';
 
   const PLATFORM_SELECTORS = {
     facebook: {
-      postContainers: ['[role="article"]', '[data-ad-comet-preview]', '[data-pagelet^="FeedUnit"]'],
+      postContainers: ['[role="article"]', '[data-ad-comet-preview]', '[data-pagelet^="FeedUnit"]', 'div[data-testid="fbfeed_story"]'],
       textContainers: ['[data-ad-preview="description"]', '[dir="auto"]', 'span[data-slorsh-text-content]', 'p'],
     },
     x: {
-      postContainers: ['[data-testid="tweet"]', 'article[data-testid="tweet"]'],
+      postContainers: ['[data-testid="tweet"]', 'article[data-testid="tweet"]', '[data-testid="cellInnerDiv"]'],
       textContainers: ['[data-testid="tweetText"]', '[lang] p', 'div[dir="auto"]'],
     },
     reddit: {
-      postContainers: ['.Post', 'article', 'shreddit-post', '[data-testid="post-container"]'],
-      textContainers: ['.md', '[data-testid="post-content"]', 'h3', '.title'],
+      postContainers: ['.Post', 'article', 'shreddit-post', '[data-testid="post-container"]', 'shreddit-comment'],
+      textContainers: ['.md', '[data-testid="post-content"]', 'h3', '.title', '[slot="title"]', '[slot="text-body"]', 'p'],
     },
     youtube: {
       postContainers: [
@@ -24,7 +24,8 @@
         'ytd-compact-video-renderer',
         'ytd-grid-video-renderer',
         'ytd-reel-item-renderer',
-        'ytd-comment-thread-renderer'
+        'ytd-comment-thread-renderer',
+        'ytd-notification-renderer'
       ],
       textContainers: [
         '#video-title',
@@ -35,6 +36,36 @@
         '.title'
       ],
     },
+    instagram: {
+      postContainers: ['article', 'div[role="dialog"]', 'div._aagv', 'div._a9zs', 'div._ab8w'],
+      textContainers: ['h1', 'span._aacl', 'span._ap3a', 'div._a9zs', 'div._a9zr', 'span[dir="auto"]'],
+    },
+    threads: {
+      postContainers: ['[data-pressable-container="true"]', 'div[role="feed"] > div', 'article'],
+      textContainers: ['span[dir="auto"]', 'div[dir="auto"]', 'p'],
+    },
+    tiktok: {
+      postContainers: [
+        '[data-e2e="recommend-list-item-container"]',
+        'div[data-e2e="comment-item"]',
+        'div[data-e2e="user-post-item"]',
+        'div.css-1soki6-DivItemContainerV2',
+        'div[data-e2e="search_top-item"]'
+      ],
+      textContainers: [
+        '[data-e2e="video-desc"]',
+        '[data-e2e="comment-level-1"]',
+        'span[data-e2e="comment-level-2"]',
+        'p[data-e2e="search-card-video-caption"]',
+        'h1',
+        'h2',
+        'h3'
+      ],
+    },
+    bluesky: {
+      postContainers: ['[data-testid^="feedItem-"]', '[data-testid^="postThreadItem-"]', 'div[role="article"]'],
+      textContainers: ['[data-testid="postText"]', 'div[dir="auto"]', 'p'],
+    },
   };
 
   function detectPlatform() {
@@ -43,6 +74,10 @@
     if (host.includes('x.com') || host.includes('twitter.com')) return 'x';
     if (host.includes('reddit.com')) return 'reddit';
     if (host.includes('youtube.com')) return 'youtube';
+    if (host.includes('instagram.com')) return 'instagram';
+    if (host.includes('threads.net')) return 'threads';
+    if (host.includes('tiktok.com')) return 'tiktok';
+    if (host.includes('bsky.app')) return 'bluesky';
     return null;
   }
 
@@ -75,16 +110,18 @@
       const whitelist = new Set(title.whitelistedKeywords || []);
       for (const kw of title.keywords || []) {
         if (whitelist.has(kw)) continue;
-        if (!activeKeywords.has(kw.toLowerCase())) {
-          activeKeywords.set(kw.toLowerCase(), new Set());
+        const normalizedKw = kw.toLowerCase().trim();
+        if (!normalizedKw) continue;
+        if (!activeKeywords.has(normalizedKw)) {
+          activeKeywords.set(normalizedKw, new Set());
         }
-        activeKeywords.get(kw.toLowerCase()).add(title.title);
+        activeKeywords.get(normalizedKw).add(title.title);
       }
     }
 
     // Pro Sports Blackout Mode
     if (cachedState?.settings?.sportsBlackout) {
-      const sportsKws = ['final score', 'full time', 'game winner', 'buzzer beater', 'race result', 'grand prix winner'];
+      const sportsKws = ['final score', 'full time', 'game winner', 'buzzer beater', 'race result', 'grand prix winner', 'super bowl'];
       for (const kw of sportsKws) {
         if (!activeKeywords.has(kw)) {
           activeKeywords.set(kw, new Set());
@@ -106,12 +143,10 @@
         matched = text.toLowerCase().includes(keyword);
       } else if (matchMode === 'fuzzy') {
         const idx = text.toLowerCase().indexOf(keyword[0]);
-
         if (idx !== -1) {
           const window = text
             .toLowerCase()
             .slice(idx, idx + keyword.length + 2);
-
           matched = levenshtein(window, keyword) <= 1;
         }
       } else {
@@ -119,7 +154,6 @@
           `\\b${escapeRegex(keyword)}\\b`,
           'i'
         );
-
         matched = regex.test(text);
       }
 
@@ -131,15 +165,16 @@
         indicators: []
       };
 
-      for (const title of titles) {
-        const result = window.SpoilerEngine.calculate(
-          text,
-          title
-        );
-
-        if (result.score > bestResult.score) {
-          bestResult = result;
+      if (window.SpoilerEngine && typeof window.SpoilerEngine.calculate === 'function') {
+        for (const title of titles) {
+          const result = window.SpoilerEngine.calculate(text, title);
+          if (result.score > bestResult.score) {
+            bestResult = result;
+          }
         }
+      } else {
+        // Fallback heuristic if engine not loaded
+        bestResult = { score: 50, level: 'medium', indicators: [keyword] };
       }
 
       return {
@@ -176,7 +211,6 @@
   // ── DOM manipulation ──────────────────────────────────────────────
 
   let processedPosts = new WeakSet();
-  const BLOCKED_CLASS = 'spoilerblock-blurred';
   const OVERLAY_CLASS = 'spoilerblock-overlay';
 
   function findPostContainers() {
@@ -198,8 +232,6 @@
     return text.trim();
   }
 
-  // Create a stable local fingerprint for a social-media post.
-  // This avoids depending on platform-specific internal post IDs.
   function getPostId(post) {
     const text = getPostText(post)
       .replace(/\s+/g, ' ')
@@ -207,7 +239,6 @@
       .toLowerCase();
 
     let hash = 2166136261;
-
     for (let i = 0; i < text.length; i++) {
       hash ^= text.charCodeAt(i);
       hash = Math.imul(hash, 16777619);
@@ -245,8 +276,8 @@
       });
     }
 
-    // Also blur images/media in the post (common on Facebook/Reddit)
-    post.querySelectorAll('img, video').forEach((el) => {
+    // Also blur images/media in the post
+    post.querySelectorAll('img, video, canvas').forEach((el) => {
       el.style.filter = blurValue;
       el.style.transition = 'filter 0.3s ease';
     });
@@ -276,21 +307,20 @@
     // Wire up buttons
     overlay.querySelector('.spoilerblock-btn-reveal').addEventListener('click', async (e) => {
       e.stopPropagation();
-
       await sendMessage({
         type: 'REVEAL_POST',
         postId,
       });
       textEls.forEach((el) => { el.style.filter = 'none'; });
-      post.querySelectorAll('img, video').forEach((el) => { el.style.filter = 'none'; });
+      post.querySelectorAll('img, video, canvas').forEach((el) => { el.style.filter = 'none'; });
       overlay.remove();
-      processedPosts.delete(post); // allow re-processing if needed
+      processedPosts.delete(post);
     });
 
     overlay.querySelector('.spoilerblock-btn-fp').addEventListener('click', (e) => {
       e.stopPropagation();
       // Report false positive — find the title and whitelist the keyword
-      const titleIds = cachedState.watchlist
+      const titleIds = (cachedState.watchlist || [])
         .filter((t) => matchInfo.titles.includes(t.title))
         .map((t) => t.id);
       for (const titleId of titleIds) {
@@ -302,7 +332,7 @@
       }
       // Un-blur
       textEls.forEach((el) => { el.style.filter = 'none'; });
-      post.querySelectorAll('img, video').forEach((el) => { el.style.filter = 'none'; });
+      post.querySelectorAll('img, video, canvas').forEach((el) => { el.style.filter = 'none'; });
       overlay.remove();
       processedPosts.delete(post);
     });
@@ -346,8 +376,7 @@
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'STATE_UPDATED') {
       loadState().then(() => {
-        // Re-scan all posts since keywords may have changed
-        processedPosts = new WeakSet(); // reset — but WeakSet can't be reassigned...
+        processedPosts = new WeakSet();
         scanPosts();
       });
     }
@@ -357,7 +386,7 @@
   let scanTimer = null;
   function scheduleScan() {
     if (scanTimer) clearTimeout(scanTimer);
-    scanTimer = setTimeout(scanPosts, 500);
+    scanTimer = setTimeout(scanPosts, 400);
   }
 
   const observer = new MutationObserver((mutations) => {

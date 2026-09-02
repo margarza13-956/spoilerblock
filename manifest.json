@@ -1,15 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "SpoilerBlock",
+  "name": "SpoilerBlock — Social Media Spoiler Blocker",
   "version": "1.0.0",
-  "description": "Hides social media spoilers for movies, TV shows, books, and games you haven't finished yet.",
-  "permissions": ["storage", "activeTab"],
+  "description": "Hides social media spoilers on YouTube, X, Reddit, Facebook, Instagram, Threads, TikTok, and Bluesky for movies, TV shows, and sports.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
   "host_permissions": [
     "https://www.facebook.com/*",
     "https://x.com/*",
     "https://twitter.com/*",
     "https://www.reddit.com/*",
-    "https://www.youtube.com/*"
+    "https://www.youtube.com/*",
+    "https://www.instagram.com/*",
+    "https://www.threads.net/*",
+    "https://www.tiktok.com/*",
+    "https://bsky.app/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -30,10 +37,19 @@
         "https://x.com/*",
         "https://twitter.com/*",
         "https://www.reddit.com/*",
-        "https://www.youtube.com/*"
+        "https://www.youtube.com/*",
+        "https://www.instagram.com/*",
+        "https://www.threads.net/*",
+        "https://www.tiktok.com/*",
+        "https://bsky.app/*"
       ],
-      "js": ["spoiler-engine.js", "content.js"],
-      "css": ["spoilerblock.css"],
+      "js": [
+        "spoiler-engine.js",
+        "content.js"
+      ],
+      "css": [
+        "spoilerblock.css"
+      ],
       "run_at": "document_idle"
     }
   ],

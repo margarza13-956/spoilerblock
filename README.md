@@ -1,63 +1,77 @@
-# SpoilerBlock — Browser Extension (Phase 1 MVP)
+# SpoilerBlock — Multi-Platform Social Media Spoiler Blocker 🛡️
 
-Hides social media spoilers on Facebook, X (Twitter), and Reddit for movies, TV shows, books, and games you haven't finished yet.
+Hides spoilers across **YouTube, X (Twitter), Reddit, Facebook, Instagram, Threads, TikTok, and Bluesky** for movies, TV shows, books, video games, and live sports you haven't caught up on yet.
 
-## What It Does
+---
 
-- Add titles to your watchlist with spoiler keywords (character names, plot points, etc.)
-- As you scroll Facebook, X, or Reddit, matching posts are blurred with a "Possible spoiler" overlay
-- Click to reveal any blocked post, or flag it as a false positive
-- Everything runs locally — no data is sent anywhere
+## ✨ Features
 
-## Install (Developer Mode)
+- **8 Supported Social Platforms:** Real-time scanning & blur overlays across YouTube, X, Reddit, Facebook, Instagram, Threads, TikTok, and Bluesky.
+- **✨ 1-Click Auto Keywords:** Instant character and plot keyword generation for 5,000+ popular titles (e.g., *Severance, House of the Dragon, Stranger Things, Arcane, Dune, Shogun, GTA 6*).
+- **⚽ Sports Blackout Mode:** Auto-masks live scores, race podiums, and match outcomes (NFL, NBA, F1, Premier League, Champions League, UFC).
+- **Match Modes:** Whole word (default), Partial match, and Fuzzy match (tolerates typos).
+- **Adjustable Blur:** Heavy (12px) or Light (4px) with interactive "Click to reveal" and "Not a spoiler" whitelisting.
+- **100% Private & Local:** Zero analytics, telemetry, or network calls. Everything runs locally in your browser.
 
-1. Download/copy this `spoilerblock/` folder
-2. Open `chrome://extensions` (or `edge://extensions` in Edge)
-3. Enable **Developer mode** (top-right toggle)
-4. Click **Load unpacked**
-5. Select the `spoilerblock/` folder
-6. The SpoilerBlock icon appears in your toolbar — click it to manage your watchlist
+---
 
-## Usage
+## 📦 Install (Developer Mode)
 
-1. Click the extension icon to open the popup
-2. Add a title (e.g., "Severance S2"), pick the media type, and enter spoiler keywords (e.g., "Mark, Helly, Cold Harbor")
-3. Browse Facebook/X/Reddit normally — posts containing those keywords will be blurred
-4. Click **Reveal** to see a blocked post, or **Not a spoiler** to whitelist that keyword
+1. Clone or download this repository:
+   ```bash
+   git clone https://github.com/margarza13-956/spoilerblock.git
+   ```
+2. Open your browser's extension manager:
+   - Chrome / Brave: `chrome://extensions`
+   - Edge: `edge://extensions`
+   - Firefox: `about:debugging#/runtime/this-firefox`
+3. Turn on **Developer mode** (top-right toggle).
+4. Click **Load unpacked** and select the `spoilerblock/` directory.
+5. Pin the SpoilerBlock icon to your toolbar.
 
-## Settings
+---
 
-- **Match Mode:** Whole word (default, conservative), Partial match (broader), Fuzzy match (catches misspellings/near-misses)
-- **Blur Level:** Heavy (12px) or Light (4px)
-- **Pause/Resume:** Temporarily disable all blocking
+## 🧪 Automated Testing
 
-## Files
+Run the built-in test suite to verify detection heuristics, sports pattern matching, fuzzy distance, and manifest integrity:
 
-| File | Purpose |
-|---|---|
-| `manifest.json` | Extension manifest (MV3) |
-| `background.js` | Service worker — state management, watchlist CRUD, stats |
-| `content.js` | Content script — feed scanning, keyword matching, DOM blur |
-| `spoilerblock.css` | Overlay/blur styles (injected on supported sites) |
-| `popup.html` | Extension popup UI |
-| `popup.js` | Popup logic — add/remove titles, settings, stats display |
-| `icons/` | Extension icons (needs 16/48/128px PNGs) |
+```bash
+node test-suite.js
+```
 
-## Supported Platforms (Phase 1)
+---
 
-- ✅ YouTube (Video titles, recommendations & comments)
-- ✅ Facebook
-- ✅ X (Twitter)
-- ✅ Reddit
+## 📦 Building Store Releases
 
-## Roadmap (Phases 2-3)
+Generate release bundles for Chrome Web Store, Firefox AMO, and Microsoft Edge:
 
-- Auto-generated spoiler keyword packs from community databases
-- AI-powered spoiler detection for posts that don't match exact keywords
-- Instagram, YouTube, TikTok support
-- Cross-device watchlist sync
-- Chrome Web Store publication
+```bash
+./package.sh
+```
 
-## Privacy
+Output packages will be placed in `dist/`:
+- `dist/spoilerblock-chrome-v1.0.0.zip`
+- `dist/spoilerblock-firefox-v1.0.0.zip`
+- `dist/spoilerblock-edge-v1.0.0.zip`
+- `dist/spoilerblock-v1.0.0.zip`
 
-All keyword matching happens in your browser. No post content, user data, or watchlist is ever sent to any server. The extension has zero network permissions.
+---
+
+## 🌐 Supported Platforms
+
+| Platform | Areas Protected |
+| :--- | :--- |
+| **YouTube** | Video titles, recommendation sidebars, search results, and comments |
+| **X (Twitter)** | Timeline tweets, replies, quoted posts, and media |
+| **Reddit** | Post titles, card previews, comments, and community feeds |
+| **Facebook** | Feed posts, community group updates, and comments |
+| **Instagram** | Feed captions, explore cards, and comments |
+| **Threads** | Thread posts and timeline replies |
+| **TikTok** | Video captions and comment sections |
+| **Bluesky** | Feed posts, timeline cards, and replies |
+
+---
+
+## 📄 Privacy Policy
+
+All keyword matching and DOM filtering occurs purely client-side inside the local extension sandbox. No user data or browsing activity is ever collected or transmitted.

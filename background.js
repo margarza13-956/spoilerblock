@@ -4,17 +4,31 @@
 const POPULAR_KEYWORD_PACKS = {
   severance: ['Mark Scout', 'Helly R', 'Dylan G', 'Irving', 'Milchick', 'Cobel', 'Cold Harbor', 'Lumon', 'Kier Eagan', 'Innie', 'Outie', 'Overtime Contingency', 'Break Room'],
   'house of the dragon': ['Rhaenyra', 'Daemon Targaryen', 'Alicent Hightower', 'Aemond', 'Aegon', 'Vhagar', 'Syrax', 'Green Council', 'Black Council', 'Blood and Cheese', 'Dragonstone'],
-  'stranger things': ['Eleven', 'Vecna', 'Mike Wheeler', 'Dustin', 'Lucas', 'Will Byers', 'Max Mayfield', 'Upside Down', 'Demogorgon', 'Mind Flayer', 'Hawkins Lab'],
+  'stranger things': ['Eleven', 'Vecna', 'Mike Wheeler', 'Dustin', 'Lucas', 'Will Byers', 'Max Mayfield', 'Upside Down', 'Demogorgon', 'Mind Flayer', 'Hawkins Lab', 'Brenner'],
   'the last of us': ['Joel Miller', 'Ellie', 'Abby', 'Fireflies', 'Cordyceps', 'Clicker', 'Bloater', 'Tess', 'Tommy', 'Jackson'],
   succession: ['Logan Roy', 'Kendall Roy', 'Shiv Roy', 'Roman Roy', 'Tom Wambsgans', 'Cousin Greg', 'Waystar Royco', 'GoJo', 'Lukas Matsson'],
   'game of thrones': ['Jon Snow', 'Daenerys', 'Tyrion', 'Cersei', 'Arya Stark', 'Night King', 'Iron Throne', 'Winterfell', 'White Walkers'],
   dune: ['Paul Atreides', 'Chani', 'Feyd-Rautha', 'Baron Harkonnen', 'Shai-Hulud', 'Arrakis', 'Bene Gesserit', 'Kwisatz Haderach', 'Spice Melange'],
   'the bear': ['Carmy', 'Sydney', 'Richie', 'Cousin', 'Marcus', 'Claire', 'Ever', 'Michelin Star', 'Original Beef'],
-  avengers: ['Thanos', 'Iron Man', 'Captain America', 'Infinity Stones', 'Snap', 'Endgame', 'Multiverse', 'Kang', 'Doctor Doom'],
-  'star wars': ['Skywalker', 'Darth Vader', 'Kylo Ren', 'Jedi', 'Sith', 'Death Star', 'Ahsoka', 'Mandalorian', 'Grogu'],
+  avengers: ['Thanos', 'Iron Man', 'Captain America', 'Infinity Stones', 'Snap', 'Endgame', 'Multiverse', 'Kang', 'Doctor Doom', 'Robert Downey Jr'],
+  marvel: ['Deadpool', 'Wolverine', 'Doctor Doom', 'Avengers', 'Secret Wars', 'Kang', 'Thunderbolts', 'Fantastic Four', 'Galactus'],
+  deadpool: ['Deadpool', 'Wolverine', 'Cassandra Nova', 'TVA', 'Anchor Being', 'Blade', 'Gambit', 'Elektra', 'X-23'],
+  arcane: ['Jinx', 'Vi', 'Caitlyn', 'Silco', 'Viktor', 'Jayce', 'Mel Medarda', 'Warwick', 'Vander', 'Hexcore', 'Zaun', 'Piltover', 'Ambessa'],
+  shogun: ['Toranaga', 'Blackthorne', 'Mariko', 'Yabushige', 'Ishido', 'Crimson Sky', 'Anjin', 'Osaka Castle'],
+  'squid game': ['Seong Gi-hun', 'Front Man', 'Player 456', 'Red Light Green Light', 'Glass Bridge', 'Squid Game S2', 'VIP'],
+  'star wars': ['Skywalker', 'Darth Vader', 'Kylo Ren', 'Jedi', 'Sith', 'Death Star', 'Ahsoka', 'Mandalorian', 'Grogu', 'Acolyte', 'Andor'],
+  'one piece': ['Luffy', 'Zoro', 'Nami', 'Sanji', 'Gear 5', 'Kaido', 'Joy Boy', 'Egghead', 'Vegapunk', 'Gorosei', 'Imu', 'Wano'],
+  'attack on titan': ['Eren Yeager', 'Mikasa', 'Armin', 'Levi Ackerman', 'Rumbling', 'Colossal Titan', 'Founding Titan', 'Zeke'],
+  'jujutsu kaisen': ['Gojo Satoru', 'Sukuna', 'Yuji Itadori', 'Megumi', 'Nobara', 'Shibuya Incident', 'Domain Expansion', 'Hollow Purple', 'Kenjaku'],
+  'gta 6': ['GTA VI', 'Lucia', 'Jason', 'Vice City', 'Leonida', 'Leak', 'Trailer 2', 'Release Date'],
+  'grand theft auto': ['GTA VI', 'Lucia', 'Jason', 'Vice City', 'Leonida'],
+  'elden ring': ['Shadow of the Erdtree', 'Messmer', 'Miquella', 'Radahn', 'Malenia', 'Ranni', 'Erdtree', 'Marika', 'Elden Lord'],
   'formula 1': ['Verstappen', 'Hamilton', 'Norris', 'Leclerc', 'Ferrari', 'Red Bull', 'McLaren', 'Mercedes', 'Pole Position', 'Grand Prix Winner', 'Podium', 'DNF', 'P1', 'P2', 'P3'],
   nba: ['Lakers', 'Celtics', 'Warriors', 'Finals Score', 'Buzzer Beater', 'Triple-Double', 'MVP', 'Points Scored', 'Game Winner'],
-  'premier league': ['Man City', 'Arsenal', 'Liverpool', 'Man United', 'Chelsea', 'Match Score', 'Final Score', 'Hat-trick', 'Title Winner', 'Relegation']
+  'premier league': ['Man City', 'Arsenal', 'Liverpool', 'Man United', 'Chelsea', 'Match Score', 'Final Score', 'Hat-trick', 'Title Winner', 'Relegation'],
+  'champions league': ['Real Madrid', 'Bayern', 'PSG', 'Barcelona', 'Man City', 'Final Score', 'Penalty Shootout', 'Golden Boot', 'Champions League Winner'],
+  nfl: ['Chiefs', '49ers', 'Eagles', 'Super Bowl', 'Touchdown', 'Game Winning Drive', 'MVP', 'Interception', 'Final Score'],
+  ufc: ['Main Event', 'Knockout', 'KO', 'Submission', 'TKO', 'Title Fight', 'Unanimous Decision', 'UFC Champion']
 };
 
 const DEFAULT_STATE = {
@@ -76,7 +90,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
 
         const newTitle = {
-          id: crypto.randomUUID(),
+          id: typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `sb_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
           title: message.title,
           type: message.mediaType || 'tv',
           keywords: message.keywords || [],
@@ -124,7 +138,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const state = data.spoilerblock || DEFAULT_STATE;
 
         // Accept test keys, standard format keys, or valid promo codes
-        if (key.startsWith('PRO-') || key.startsWith('SB-') || key.length >= 8) {
+        if (key.startsWith('PRO-') || key.startsWith('SB-') || key === 'LIFETIME' || key.length >= 8) {
           state.isPro = true;
           state.licenseKey = key;
           await chrome.storage.local.set({ spoilerblock: state });

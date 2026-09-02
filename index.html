@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SpoilerBlock — Smart Social Media Spoiler Blocker</title>
-  <meta name="description" content="Shield your social feeds from TV, movie, and sports spoilers on YouTube, X (Twitter), Reddit, and Facebook with smart real-time blur overlays.">
+  <meta name="description" content="Shield your social feeds from TV, movie, and sports spoilers on YouTube, X, Reddit, Facebook, Instagram, Threads, TikTok, and Bluesky with smart real-time blur overlays.">
   <style>
     :root {
       --primary: #6366f1;
@@ -152,6 +152,28 @@
     }
 
     .btn-secondary:hover { background: #3f3f46; }
+
+    /* Supported Platforms Badge Bar */
+    .platforms-bar {
+      max-width: 800px;
+      margin: 36px auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .platform-tag {
+      background: #18181b;
+      border: 1px solid #27272a;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #a1a1aa;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
     /* Interactive Demo Sandbox */
     .demo-section {
@@ -351,7 +373,7 @@
   <header class="hero">
     <div class="badge-pill">✨ Manifest V3 &bull; 100% Privacy-First &bull; Zero Tracking</div>
     <h1>Shield Your Social Feeds From Unwanted Spoilers</h1>
-    <p>Automatically detect and blur spoilers for movies, TV shows, and live sports on YouTube, X (Twitter), Reddit, and Facebook in real time.</p>
+    <p>Automatically detect and blur spoilers for movies, TV shows, and live sports across 8 major social networks in real time.</p>
     <div class="hero-cta">
       <a href="https://chrome.google.com/webstore/devconsole" class="btn-primary">
         Add to Browser — Free 🚀
@@ -359,6 +381,17 @@
       <a href="https://github.com/margarza13-956/spoilerblock" target="_blank" class="btn-secondary">
         View on GitHub ⭐
       </a>
+    </div>
+
+    <div class="platforms-bar">
+      <span class="platform-tag">▶️ YouTube</span>
+      <span class="platform-tag">𝕏 X (Twitter)</span>
+      <span class="platform-tag">🤖 Reddit</span>
+      <span class="platform-tag">📘 Facebook</span>
+      <span class="platform-tag">📷 Instagram</span>
+      <span class="platform-tag">🧵 Threads</span>
+      <span class="platform-tag">🎵 TikTok</span>
+      <span class="platform-tag">🦋 Bluesky</span>
     </div>
   </header>
 
@@ -395,14 +428,14 @@
   <section class="features" id="features">
     <div class="section-headline">
       <h2>Everything You Need to Browse Safely</h2>
-      <p style="color:var(--text-muted);">Built with smart heuristics and zero external tracking.</p>
+      <p style="color:var(--text-muted);">Built with smart heuristics, multi-platform observers, and zero telemetry.</p>
     </div>
 
     <div class="grid-3">
       <div class="feature-card">
-        <div class="feature-icon">📺</div>
-        <h3>YouTube & Social Feeds</h3>
-        <p>Scans YouTube video titles, thumbnails, and comments, plus Twitter/X feeds, Reddit threads, and Facebook posts.</p>
+        <div class="feature-icon">🌐</div>
+        <h3>8 Social Platforms</h3>
+        <p>Real-time protection on YouTube, X (Twitter), Reddit, Facebook, Instagram, Threads, TikTok, and Bluesky.</p>
       </div>
 
       <div class="feature-card">
